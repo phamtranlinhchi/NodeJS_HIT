@@ -56,9 +56,6 @@ app.use(express.json());
 //     res.send("Successfully Delete");
 // });
 
-// app.listen(port, () => {
-//     console.log(`Running server on port ${port}`);
-// });
 
 
 const data = {
