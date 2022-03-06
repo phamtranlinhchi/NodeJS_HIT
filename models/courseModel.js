@@ -6,6 +6,6 @@ const courseSchema = new mongoose.Schema({
 	year: Number,
 });
 
-const Course = mongoose.model("Courses", courseSchema);
+const Course = mongoose.model("Course", courseSchema);
 
 module.exports = Course;
