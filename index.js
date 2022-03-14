@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const postRouter = require('./routes/postRouter');
 const userRouter = require('./routes/userRouter');
 
 const app = express();
@@ -23,8 +22,6 @@ mongoose
 // }
 
 app.use(express.json());
-
-// app.use('/posts', postRouter);
 
 app.use('/users', userRouter);
 
