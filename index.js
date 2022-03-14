@@ -24,7 +24,7 @@ mongoose
 
 app.use(express.json());
 
-app.use('/posts', postRouter);
+// app.use('/posts', postRouter);
 
 app.use('/users', userRouter);
 
