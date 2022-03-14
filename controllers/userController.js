@@ -1,37 +1,49 @@
-const User = require("../models/userModel");
+const User = require('../models/userModel');
+const asyncHandle = require('../middlewares/asyncHandle');
 
-const getAllUsers = async (req, res) => {
-	const users = await User.find();
-	res.json(users);
-};
+const getAllUsersAndPosts = asyncHandle(async (req, res) => {
+    const users = await User.find().populate('posts');
+    res.json(users);
+});
 
-const getUser = async (req, res) => {
-	let { id } = req.params;
-	const user = await User.findById(id);
-	res.json(user);
-};
+const getUserAndPosts = asyncHandle(async (req, res) => {
+    let { id } = req.params;
+    const user = await User.findById(id).populate('posts');
+    res.json(user);
+});
 
-const createUser = async (req, res) => {
-	const newUser = await User.create(req.body);
-	res.json(newUser);
-};
+const getUsersBetween18And40 = asyncHandle(async (req, res) => {
+    const users = await User.find({
+        age: {
+            $gte: 18,
+            $lte: 40,
+        },
+    });
+    res.json(users);
+});
 
-const updateUser = async (req, res) => {
-	let { id } = req.params;
-	const user = await User.findByIdAndUpdate(id, req.body);
-	res.json(user);
-};
+const getUsersNameStartWithH = asyncHandle(async (req, res) => {
+    const users = await User.find({ name: /^h/ });
+    res.json(users);
+});
 
-const deleteUser = async (req, res) => {
-	let { id } = req.params;
-	const user = await User.findByIdAndDelete(id);
-	res.json(user);
-};
+const updateUserById = asyncHandle(async (req, res) => {
+    let { id } = req.params;
+    const user = await User.findByIdAndUpdate(id, req.body);
+    res.json(user);
+});
+
+const deleteUserById = asyncHandle(async (req, res) => {
+    let { id } = req.params;
+    const user = await User.findByIdAndDelete(id);
+    res.json(user);
+});
 
 module.exports = {
-	getAllUsers,
-	getUser,
-	createUser,
-	updateUser,
-	deleteUser,
+    getAllUsersAndPosts,
+    getUserAndPosts,
+    getUsersBetween18And40,
+    getUsersNameStartWithH,
+    updateUserById,
+    deleteUserById,
 };

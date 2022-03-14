@@ -1,16 +1,16 @@
-const express = require("express");
-const mongoose = require("mongoose");
+const express = require('express');
+const mongoose = require('mongoose');
 
-const courseRouter = require("./routes/courseRouter");
-const userRouter = require("./routes/userRouter");
+const postRouter = require('./routes/postRouter');
+const userRouter = require('./routes/userRouter');
 
 const app = express();
 const port = 3000;
 
 mongoose
-    .connect("mongodb://localhost:27017/web-course")
+    .connect('mongodb://localhost:27017/web-course')
     .then(() => {
-        console.log("connected to database");
+        console.log('connected to database');
     })
     .catch((err) => {
         console.log(err.message);
@@ -24,9 +24,9 @@ mongoose
 
 app.use(express.json());
 
-app.use("/courses", courseRouter);
+app.use('/posts', postRouter);
 
-app.use("/users", userRouter);
+app.use('/users', userRouter);
 
 app.listen(port, () => {
     console.log(`Running server on port ${port}`);
