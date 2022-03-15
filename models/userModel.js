@@ -5,15 +5,16 @@ const userSchema = new mongoose.Schema({
     age: Number,
     posts: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Post',
         },
     ],
-    userType: {
+    role: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user',
     },
+    password: String,
 });
 
 const User = mongoose.model('User', userSchema);
