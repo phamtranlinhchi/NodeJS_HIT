@@ -7,5 +7,5 @@ module.exports.admin = asyncHandle((req, res, next) => {
     if (user && user.userType === 'admin') {
         next();
     }
-    res.json('Error');
+    res.send('Error');
 });
