@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 const asyncHandle = require('../middlewares/asyncHandle');
 const bcrypt = require('bcrypt');
 
-module.exports.login = asyncHandle(async (req, res) => {
+module.exports.login = asyncHandle(async (req, res, next) => {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
