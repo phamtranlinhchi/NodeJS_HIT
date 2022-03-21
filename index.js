@@ -1,14 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv').config();
 
-const authMiddleware = require('./middlewares/authMiddleware');
 const userRouter = require('./routes/userRouter');
+const urlRouter = require('./routes/urlRouter');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 mongoose
-    .connect('mongodb://localhost:27017/web-course')
+    .connect(process.env.MONGODB || 'mongodb://localhost:27017/web-course')
     .then(() => {
         console.log('connected to database');
     })
@@ -25,6 +26,8 @@ mongoose
 app.use(express.json());
 
 app.use('/users', userRouter);
+
+app.use('/', urlRouter);
 
 app.listen(port, () => {
     console.log(`Running server on port ${port}`);

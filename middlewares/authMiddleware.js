@@ -15,11 +15,14 @@ module.exports.admin = asyncHandle(async (req, res, next) => {
 module.exports.protect = asyncHandle(async (req, res, next) => {
     if (
         req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer ')
+        req.headers.authorization.startsWith('Bearer')
     ) {
-        const token = req.headers.authorization('Bearer ')[1];
-        console.log(jwt.verify(token, 'hey'));
+        const token = req.headers.authorization.split(' ')[1];
+        jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
+            if (err) res.send('Invalid token');
+            next();
+        });
     } else {
-        res.send('khong co token');
+        res.send('Not found token. Need to sign in');
     }
 });

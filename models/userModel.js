@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     name: String,
@@ -14,7 +15,13 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user',
     },
-    password: String,
+    username: { type: String, require: true },
+    password: { type: String, require: true },
+});
+
+userSchema.pre('save', async function (next) {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
 });
 
 const User = mongoose.model('User', userSchema);

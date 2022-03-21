@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/userModel');
-const asyncHandle = require('../middlewares/authMiddleware');
+const asyncHandle = require('../middlewares/asyncHandle');
+const bcrypt = require('bcrypt');
 
 module.exports.login = asyncHandle(async (req, res) => {
     const { username, password } = req.body;
@@ -9,14 +9,18 @@ module.exports.login = asyncHandle(async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-        res.send('nguoi dung k ton tai');
+        res.send('Not found user');
     }
 
-    if (!(await user.isPasswordMatch(password))) {
-        return res.send('tai khoan hoac mat khau sai');
+    const validPassword = bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+        return res.send('Invalid password or username');
     }
 
-    const token = jwt.sign({ username }, 'hey', { expiresIn: '1h' });
+    const token = jwt.sign({ username }, process.env.PRIVATE_KEY, {
+        expiresIn: '1h',
+    });
 
     res.status(200).json({ token });
 });

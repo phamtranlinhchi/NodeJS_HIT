@@ -8,7 +8,6 @@ const userRouter = express.Router();
 userRouter
     .route('/')
     .get(authMiddleware.admin, userController.getAllUsersAndPosts);
-
 userRouter
     .route('/:id')
     .get(userController.getUserAndPosts)
