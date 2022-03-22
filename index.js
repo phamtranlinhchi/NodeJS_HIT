@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const errorHandle = require('./middlewares/errorHandle');
 require('dotenv').config();
 
-const userRouter = require('./routes/userRouter');
-const urlRouter = require('./routes/urlRouter');
+const userRouter = require('../nodejs/routes/userRouter');
+const urlRouter = require('../nodejs/routes/urlRouter');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -28,6 +29,8 @@ app.use(express.json());
 app.use('/users', userRouter);
 
 app.use('/urls', urlRouter);
+
+app.use(errorHandle);
 
 app.listen(port, () => {
     console.log(`Running server on port ${port}`);
