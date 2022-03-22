@@ -27,7 +27,7 @@ app.use(express.json());
 
 app.use('/users', userRouter);
 
-app.use('/', urlRouter);
+app.use('/urls', urlRouter);
 
 app.listen(port, () => {
     console.log(`Running server on port ${port}`);

@@ -3,7 +3,7 @@ const asyncHandle = require('../middlewares/asyncHandle');
 const shortid = require('shortid');
 const validUrl = require('valid-url');
 
-// [POST] /shorten
+// [POST] /urls/
 const shortenUrl = asyncHandle(async (req, res, next) => {
     const { longUrl } = req.body;
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
@@ -27,7 +27,7 @@ const shortenUrl = asyncHandle(async (req, res, next) => {
                 date: new Date(),
             });
 
-            url.save();
+            await url.save();
 
             res.json(url);
         }
@@ -36,11 +36,11 @@ const shortenUrl = asyncHandle(async (req, res, next) => {
     }
 });
 
-// [GET] /:code
-const directToLongUrl = asyncHandle(async (req, res, next) => {
+// [GET] /urls/:code
+const getUrl = asyncHandle(async (req, res, next) => {
     const url = await Url.findOne({ urlCode: req.params.code });
     if (url) {
-        return res.redirect(url.longUrl);
+        return res.json(url);
     } else {
         return res.status(404).json('Not found url');
     }
@@ -48,5 +48,5 @@ const directToLongUrl = asyncHandle(async (req, res, next) => {
 
 module.exports = {
     shortenUrl,
-    directToLongUrl,
+    getUrl,
 };

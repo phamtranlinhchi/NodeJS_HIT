@@ -8,12 +8,8 @@ const urlRouter = express.Router();
 
 urlRouter.route('/login').post(authController.login);
 
-urlRouter
-    .route('/shorten')
-    .post(authMiddleware.protect, urlController.shortenUrl);
+urlRouter.route('/').post(authMiddleware.protect, urlController.shortenUrl);
 
-urlRouter
-    .route('/:code')
-    .get(authMiddleware.protect, urlController.directToLongUrl);
+urlRouter.route('/:code').get(authMiddleware.protect, urlController.getUrl);
 
 module.exports = urlRouter;
