@@ -24,3 +24,10 @@ module.exports.login = asyncHandle(async (req, res, next) => {
 
     res.status(200).json({ token });
 });
+
+// module.exports.forgetPassword = asyncHandle(async (req, res, next) => {
+//     const { email } = req.body;
+
+//     const user = await User.findOne({ email })
+
+// }
