@@ -1,32 +1,15 @@
 const Url = require('../models/urlModel');
 const asyncHandle = require('../middlewares/asyncHandle');
-const shortid = require('shortid');
 const validUrl = require('valid-url');
 
 // [POST] /urls/
 const shortenUrl = asyncHandle(async (req, res, next) => {
     const { longUrl } = req.body;
 
-    // create url code
-    const urlCode = shortid.generate();
-
     // check long url
     if (validUrl.isUri(longUrl)) {
-        let url = await Url.findOne({ longUrl });
-
-        if (url) {
-            res.json(url);
-        } else {
-            url = new Url({
-                longUrl,
-                urlCode,
-                date: new Date(),
-            });
-
-            await url.save();
-
-            res.json(url);
-        }
+        const url = await Url.create(longUrl);
+        res.json(url);
     } else {
         res.status(401).json('Invalid long url');
     }
