@@ -1,5 +1,5 @@
 const asyncHandle = require('./asyncHandle');
-const User = require('../../nodejs/models/userModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
 module.exports.admin = asyncHandle(async (req, res, next) => {

@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const errorHandle = require('./middlewares/errorHandle');
 require('dotenv').config();
 
-const userRouter = require('../nodejs/routes/userRouter');
-const urlRouter = require('../nodejs/routes/urlRouter');
+const userRouter = require('./routes/userRouter');
+const urlRouter = require('./routes/urlRouter');
 
 const app = express();
 const port = process.env.PORT || 3000;

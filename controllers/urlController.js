@@ -8,7 +8,7 @@ const shortenUrl = asyncHandle(async (req, res, next) => {
 
     // check long url
     if (validUrl.isUri(longUrl)) {
-        const url = await Url.create(longUrl);
+        const url = await Url.create(req.body);
         res.json(url);
     } else {
         res.status(401).json('Invalid long url');

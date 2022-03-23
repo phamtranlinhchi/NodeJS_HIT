@@ -12,7 +12,9 @@ const urlSchema = new mongoose.Schema({
 
 urlSchema.pre('save', async function (next) {
     let code = shortid.generate();
-    while (await Url.find({ urlcode: code })) code = shortid.generate();
+    while (await Url.findOne({ urlCode: code })) {
+        code = shortid.generate();
+    }
     this.urlCode = code;
     next();
 });
