@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 
 const urlSchema = new mongoose.Schema({
-    longUrl: { type: String, require: true },
+    longUrl: {
+        type: String,
+        require: true,
+        trim: true,
+    },
     urlCode: { type: String, unique: true },
     date: {
         type: String,
