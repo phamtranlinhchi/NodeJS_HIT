@@ -24,6 +24,19 @@ const errorHandle = (err, req, res, next) => {
         error = new ErrorResponse(message, 400);
     }
 
+    // Error jwt validation
+    if (err.name === 'JsonWebTokenError') {
+        error = new ErrorResponse('Invalid token, Please log in again!', 401);
+    }
+
+    // Error jwt expired
+    if (err.name === 'TokenExpiredError') {
+        error = new ErrorResponse(
+            'Your token has expired! please login again',
+            401
+        );
+    }
+
     res.status(error.statusCode || 500).json({
         msg: error.message || 'Lỗi máy chủ',
     });
