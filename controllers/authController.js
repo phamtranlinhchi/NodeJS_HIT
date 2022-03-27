@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const asyncHandle = require('../middlewares/asyncHandle');
-const bcrypt = require('bcrypt');
+const ErrorResponse = require('../common/ErrorResponse');
 
 module.exports.login = asyncHandle(async (req, res, next) => {
     const { username, password } = req.body;
@@ -9,13 +9,11 @@ module.exports.login = asyncHandle(async (req, res, next) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-        res.send('Not found user');
+        return next(new ErrorResponse('Not found user', 401));
     }
 
-    const validPassword = bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
-        return res.send('Invalid password or username');
+    if (!user.isPasswordMatch(password)) {
+        return next(new ErrorResponse('Invalid password', 401));
     }
 
     const token = jwt.sign({ username }, process.env.PRIVATE_KEY, {

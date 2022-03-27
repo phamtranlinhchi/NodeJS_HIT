@@ -5,40 +5,46 @@ const errorHandle = (err, req, res, next) => {
 
     error.message = err.message;
 
-    // Log error on dev
-    console.log(err.stack);
+    if (process.env.NODE_ENV === 'development') {
+        // Log error on dev
+        console.log(err.stack);
 
-    // MongoDB bad ObjectID
-    if (err.name === 'CastError') {
-        error = new ErrorResponse('Id không đúng định dạng', 404);
-    }
+        // MongoDB bad ObjectID
+        if (err.name === 'CastError') {
+            error = new ErrorResponse(err.message, 404);
+        }
 
-    //MongoDB duplicate value key
-    if (err.code === 11000) {
-        error = new ErrorResponse('Dự liệu trùng', 400);
-    }
+        //MongoDB duplicate value key
+        if (err.code === 11000) {
+            error = new ErrorResponse(err.message, 400);
+        }
 
-    // MongoDB validation failed
-    if (err.name === 'ValidationError') {
-        const message = Object.values(err.errors).map((value) => value.message);
-        error = new ErrorResponse(message, 400);
-    }
+        // MongoDB validation failed
+        if (err.name === 'ValidationError') {
+            const message = Object.values(err.errors)
+                .map((value) => value.message)
+                .join(', ');
+            error = new ErrorResponse(message, 400);
+        }
 
-    // Error jwt validation
-    if (err.name === 'JsonWebTokenError') {
-        error = new ErrorResponse('Invalid token, Please log in again!', 401);
-    }
+        // Error jwt validation
+        if (err.name === 'JsonWebTokenError') {
+            error = new ErrorResponse(err.message, 401);
+        }
 
-    // Error jwt expired
-    if (err.name === 'TokenExpiredError') {
-        error = new ErrorResponse(
-            'Your token has expired! please login again',
-            401
-        );
+        // Error jwt expired
+        if (err.name === 'TokenExpiredError') {
+            error = new ErrorResponse(err.message, 401);
+        }
+    } else {
+        // MongoDB bad ObjectID
+        if (err.name === 'CastError') {
+            error = new ErrorResponse('Not found ID', 404);
+        }
     }
 
     res.status(error.statusCode || 500).json({
-        msg: error.message || 'Lỗi máy chủ',
+        msg: error.message || 'Server Error',
     });
 };
 

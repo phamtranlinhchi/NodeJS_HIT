@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const Post = require('./postModel');
+
 const userSchema = new mongoose.Schema({
     name: String,
     age: Number,
@@ -15,14 +17,25 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user',
     },
-    username: { type: String, require: true },
-    password: { type: String, require: true },
+    username: {
+        type: String,
+        required: [true, 'require username'],
+    },
+    password: {
+        type: String,
+        required: [true, 'require password'],
+    },
 });
 
 userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
+
+userSchema.methods.isPasswordMatch = async function (password) {
+    const user = this;
+    return await bcrypt.compare(password, user.password);
+};
 
 const User = mongoose.model('User', userSchema);
 

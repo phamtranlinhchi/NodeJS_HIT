@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const userRouter = require('./routes/userRouter');
 const urlRouter = require('./routes/urlRouter');
+const ErrorResponse = require('./common/ErrorResponse');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,8 +31,18 @@ app.use('/users', userRouter);
 
 app.use('/urls', urlRouter);
 
-app.use(errorHandle);
+app.use('/*', (req, res, next) => {
+    return next(new ErrorResponse('Not found route', 404));
+});
 
-app.listen(port, () => {
+if (process.env.NODE_ENV === 'development') {
+    app.use(errorHandle);
+}
+
+// if (process.env.NODE_ENV === 'production') {
+// }
+
+app.listen(port, (err) => {
+    if (err) console.log(err);
     console.log(`Running server on port ${port}`);
 });

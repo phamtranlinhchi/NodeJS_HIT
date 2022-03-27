@@ -1,6 +1,7 @@
 const Url = require('../models/urlModel');
 const asyncHandle = require('../middlewares/asyncHandle');
 const validUrl = require('valid-url');
+const ErrorResponse = require('../common/ErrorResponse');
 
 // [POST] /urls/
 const shortenUrl = asyncHandle(async (req, res, next) => {
@@ -9,9 +10,9 @@ const shortenUrl = asyncHandle(async (req, res, next) => {
     // check long url
     if (validUrl.isUri(longUrl)) {
         const url = await Url.create(req.body);
-        res.json(url);
+        res.status(201).json(url);
     } else {
-        res.status(401).json('Invalid long url');
+        return next(new ErrorResponse('Invalid long url', 401));
     }
 });
 
@@ -19,9 +20,9 @@ const shortenUrl = asyncHandle(async (req, res, next) => {
 const getUrl = asyncHandle(async (req, res, next) => {
     const url = await Url.findOne({ urlCode: req.params.code });
     if (url) {
-        return res.json(url);
+        return res.status(200).json(url);
     } else {
-        return res.status(404).json('Not found url');
+        return next(new ErrorResponse('Not found url', 404));
     }
 });
 

@@ -7,19 +7,21 @@ const userRouter = express.Router();
 
 userRouter
     .route('/')
-    .get(authMiddleware.admin, userController.getAllUsersAndPosts);
-userRouter
-    .route('/:id')
-    .get(userController.getUserAndPosts)
-    .put(userController.updateUserById)
-    .delete(authMiddleware.admin, userController.deleteUserById);
+    .get(userController.getAllUsersAndPosts)
+    .post(userController.createUser);
 
 userRouter
     .route('18-40')
     .get(authMiddleware.admin, userController.getUsersBetween18And40);
 
 userRouter
-    .route('start-with-h')
+    .route('name-start-with-h')
     .get(authMiddleware.admin, userController.getUsersNameStartWithH);
+
+userRouter
+    .route('/:id')
+    .get(userController.getUserAndPosts)
+    .put(userController.updateUserById)
+    .delete(userController.deleteUserById);
 
 module.exports = userRouter;
