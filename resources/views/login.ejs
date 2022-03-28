@@ -5,30 +5,31 @@
     </head>
     <body>
         <div class="m-4">
-            <form
-                method="POST"
-                action="/auth/change-password?tk=<%=token%>&_method=PUT"
-            >
+            <form method="POST" action="/auth/login">
                 <div class="mb-3">
-                    <label for="newPass" class="form-label">New password</label>
+                    <label for="username" class="form-label">Username</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        name="username"
+                    />
+                </div>
+                <div>
+                    <label for="password" class="form-label">Password</label>
                     <input
                         type="password"
                         class="form-control"
-                        id="newPass"
-                        name="newPassword"
+                        id="password"
+                        name="password"
                     />
                 </div>
-                <div class="mb-3">
-                    <label for="cfNewPass" class="form-label"
-                        >Confirm new password</label
-                    >
-                    <input
-                        type="password"
-                        class="form-control"
-                        id="cfNewPass"
-                    />
-                </div>
-                <button type="submit" class="btn btn-primary">Done</button>
+                <a href="/auth/forget-password" style="text-decoration: none">
+                    <div id="forgot" class="form-text mb-3">
+                        Forgot password?
+                    </div>
+                </a>
+                <button type="submit" class="btn btn-primary">Sign in</button>
             </form>
         </div>
         <script

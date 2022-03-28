@@ -34,8 +34,8 @@ const getUsersNameStartWithH = asyncHandle(async (req, res, next) => {
 
 // [POST] /users/
 const createUser = asyncHandle(async (req, res, next) => {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
+    await User.create(req.body);
+    res.status(201).redirect('/auth/login');
 });
 
 // [PUT] users/:id

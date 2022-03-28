@@ -1,7 +1,19 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 const User = require('../models/userModel');
 const asyncHandle = require('../middlewares/asyncHandle');
 const ErrorResponse = require('../common/ErrorResponse');
+
+// [GET] /auth/register
+module.exports.registerSite = asyncHandle(async (req, res, next) => {
+    res.render('register');
+});
+
+// [GET] /auth/login
+module.exports.loginSite = asyncHandle(async (req, res, next) => {
+    res.render('login');
+});
 
 // [POST] /auth/login
 module.exports.login = asyncHandle(async (req, res, next) => {
@@ -23,15 +35,26 @@ module.exports.login = asyncHandle(async (req, res, next) => {
     res.status(200).json({ token });
 });
 
+// [GET] auth/forget-password
+module.exports.forgetPasswordSite = asyncHandle(async (req, res, next) => {
+    res.render('forget-password');
+});
+
 // [POST] auth/forget-password
 module.exports.forgetPassword = asyncHandle(async (req, res, next) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return next(new ErrorResponse('Not found email', 401));
     await user.createResetPasswordToken();
-    return res.status(200).json({
-        url: `${process.env.HOST}/change-password?tk=${user.reset_password_token}`,
-    });
+    return res
+        .status(200)
+        .redirect(`/auth/change-password?tk=${user.reset_password_token}`);
+});
+
+// [GET] auth/change-password?tk=....
+module.exports.changePasswordSite = asyncHandle(async (req, res, next) => {
+    const token = req.query.tk;
+    res.render('change-password', { token });
 });
 
 // [PUT] auth/change-password?tk=...
@@ -45,12 +68,7 @@ module.exports.changePassword = asyncHandle(async (req, res, next) => {
         return next(new ErrorResponse('Expired token', 401));
 
     const { newPassword } = req.body;
-    await User.findByIdAndUpdate(user._id, { password: newPassword });
-    res.status(200).send('Change password successfully');
-});
-
-// [GET] auth/change-password?tk=....
-module.exports.changePasswordSite = asyncHandle(async (req, res, next) => {
-    const token = req.query.tk;
-    res.render('change-password', { token });
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(user._id, { password: hashNewPassword });
+    res.status(200).redirect('/auth/login');
 });
