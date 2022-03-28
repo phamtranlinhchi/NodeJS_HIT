@@ -48,3 +48,9 @@ module.exports.changePassword = asyncHandle(async (req, res, next) => {
     await User.findByIdAndUpdate(user._id, { password: newPassword });
     res.status(200).send('Change password successfully');
 });
+
+// [GET] auth/change-password?tk=....
+module.exports.changePasswordSite = asyncHandle(async (req, res, next) => {
+    const token = req.query.tk;
+    res.render('change-password', { token });
+});

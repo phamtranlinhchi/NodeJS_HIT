@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon --inspect index.js",
     "prod": "NODE_ENV=production nodemon --inspect index.js",
+    "watch": "node-sass --watch /resources/scss/app.scss src/public/css/app.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "chee",
@@ -16,6 +17,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
     "mongoose": "^6.2.4",
     "shortid": "^2.2.16",
     "valid-url": "^1.0.9",
