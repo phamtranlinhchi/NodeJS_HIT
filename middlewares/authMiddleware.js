@@ -5,11 +5,12 @@ const ErrorResponse = require('../common/ErrorResponse');
 
 module.exports.admin = asyncHandle(async (req, res, next) => {
     const { id } = req.query;
-    const user = User.findById(id);
+    const user = await User.findById(id);
+    console.log(user);
     if (user && user.role === 'admin') {
         next();
     } else {
-        res.send('Login first');
+        return next(new ErrorResponse('Not admin', 401));
     }
 });
 
@@ -24,6 +25,6 @@ module.exports.protect = asyncHandle(async (req, res, next) => {
             else next();
         });
     } else {
-        res.send('Not found token. Need to sign in');
+        return next(new ErrorResponse('Not authorized', 401));
     }
 });

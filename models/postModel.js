@@ -1,17 +1,19 @@
 const mongoose = require('mongoose');
+const User = require('./userModel');
 
-const postSchema = new mongoose.Schema({
-    title: String,
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+const postSchema = new mongoose.Schema(
+    {
+        title: String,
+        author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        body: String,
     },
-    body: String,
-    date: {
-        type: Date,
-        default: Date.now,
-    },
-});
+    {
+        timestamps: true,
+    }
+);
 
 const Post = mongoose.model('Post', postSchema);
 

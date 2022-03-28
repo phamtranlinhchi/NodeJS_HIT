@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const asyncHandle = require('../middlewares/asyncHandle');
 const ErrorResponse = require('../common/ErrorResponse');
 
+// [POST] /auth/login
 module.exports.login = asyncHandle(async (req, res, next) => {
     const { username, password } = req.body;
 
@@ -11,8 +12,7 @@ module.exports.login = asyncHandle(async (req, res, next) => {
     if (!user) {
         return next(new ErrorResponse('Not found user', 401));
     }
-
-    if (!user.isPasswordMatch(password)) {
+    if (!(await user.isPasswordMatch(password))) {
         return next(new ErrorResponse('Invalid password', 401));
     }
 
@@ -23,9 +23,28 @@ module.exports.login = asyncHandle(async (req, res, next) => {
     res.status(200).json({ token });
 });
 
-// module.exports.forgetPassword = asyncHandle(async (req, res, next) => {
-//     const { email } = req.body;
+// [POST] auth/forget-password
+module.exports.forgetPassword = asyncHandle(async (req, res, next) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return next(new ErrorResponse('Not found email', 401));
+    await user.createResetPasswordToken();
+    return res.status(200).json({
+        url: `${process.env.HOST}/change-password?tk=${user.reset_password_token}`,
+    });
+});
 
-//     const user = await User.findOne({ email })
+// [PUT] auth/change-password?tk=...
+module.exports.changePassword = asyncHandle(async (req, res, next) => {
+    const token = req.query.tk;
 
-// }
+    const user = await User.findOne({ reset_password_token: token });
+    if (!user) return next(new ErrorResponse('Invalid token', 401));
+
+    if (Date.now() > user.reset_password_token_expired)
+        return next(new ErrorResponse('Expired token', 401));
+
+    const { newPassword } = req.body;
+    await User.findByIdAndUpdate(user._id, { password: newPassword });
+    res.status(200).send('Change password successfully');
+});

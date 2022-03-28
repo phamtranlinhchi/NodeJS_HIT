@@ -1,39 +1,18 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const errorHandle = require('./middlewares/errorHandle');
 require('dotenv').config();
 
-const userRouter = require('./routes/userRouter');
-const urlRouter = require('./routes/urlRouter');
-const ErrorResponse = require('./common/ErrorResponse');
+const connectToDB = require('./config/database');
+const errorHandle = require('./middlewares/errorHandle');
+const route = require('./routes/index');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-mongoose
-    .connect(process.env.MONGODB || 'mongodb://localhost:27017/web-course')
-    .then(() => {
-        console.log('connected to database');
-    })
-    .catch((err) => {
-        console.log(err.message);
-    });
-
-// main().catch(err => console.log(err));
-
-// async function main() {
-//   await mongoose.connect();
-// }
+connectToDB();
 
 app.use(express.json());
 
-app.use('/users', userRouter);
-
-app.use('/urls', urlRouter);
-
-app.use('/*', (req, res, next) => {
-    return next(new ErrorResponse('Not found route', 404));
-});
+route(app);
 
 if (process.env.NODE_ENV === 'development') {
     app.use(errorHandle);
